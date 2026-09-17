@@ -6,8 +6,13 @@
 import type { Category, Menu } from '../lib/aggregate';
 
 export const links = {
-  login: '#',
-  signup: '#',
+  login: 'https://remato.ivelico.com/',
+  signup: 'https://remato.ivelico.com/',
+};
+
+/** Google Tag Manager container. Injected on every page by BaseLayout. */
+export const gtm = {
+  containerId: 'GTM-K37RTZXB',
 };
 
 export const meta = {
