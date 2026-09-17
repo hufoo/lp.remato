@@ -1,0 +1,10 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo.png';
+import { header } from '../content/site';
+
+// The logo is extracted from the app screenshot at its native size;
+// render it without resampling to keep edges as crisp as possible.
+---
+
+<Image src={logo} alt={header.logoAlt} width={logo.width} height={logo.height} format="png" loading="eager" />

@@ -1,0 +1,25 @@
+{
+  "name": "remato-lp",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "fonts": "node scripts/subset-fonts.mjs",
+    "predev": "npm run fonts",
+    "dev": "astro dev",
+    "prebuild": "npm run fonts",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^7.3.2",
+    "sharp": "^0.35.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^22.20.2",
+    "subset-font": "^2.7.0",
+    "typescript": "^6.0.3"
+  }
+}

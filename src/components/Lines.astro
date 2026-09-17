@@ -1,0 +1,21 @@
+---
+/**
+ * Renders copy lines joined by line breaks.
+ * By default breaks apply from tablet width up; `always` keeps them on phones too.
+ */
+interface Props {
+  lines: readonly string[];
+  always?: boolean;
+}
+
+const { lines, always = false } = Astro.props;
+---
+
+{
+  lines.map((line, i) => (
+    <>
+      {line}
+      {i < lines.length - 1 && (always ? <br /> : <br class="br-md" />)}
+    </>
+  ))
+}

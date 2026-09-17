@@ -1,0 +1,44 @@
+---
+import '../styles/global.css';
+import { meta } from '../content/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = meta.title, description = meta.description } = Astro.props;
+
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const ogImage = Astro.site ? new URL('/og.png', Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang={meta.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content={meta.themeColor} />
+    <link rel="preload" href="/fonts/noto-sans-jp-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/noto-sans-jp-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {canonical && <link rel="canonical" href={canonical} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={meta.siteName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="ja_JP" />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    {ogImage && <meta property="og:image:width" content="1200" />}
+    {ogImage && <meta property="og:image:height" content="630" />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

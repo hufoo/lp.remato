@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import Hero from '../components/Hero.astro';
+import Problem from '../components/Problem.astro';
+import Features from '../components/Features.astro';
+import Steps from '../components/Steps.astro';
+import Screens from '../components/Screens.astro';
+import People from '../components/People.astro';
+import Faq from '../components/Faq.astro';
+import FinalCta from '../components/FinalCta.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<BaseLayout>
+  <SiteHeader />
+  <main>
+    <Hero />
+    <Problem />
+    <Features />
+    <Steps />
+    <Screens />
+    <People />
+    <Faq />
+    <FinalCta />
+  </main>
+  <SiteFooter />
+</BaseLayout>

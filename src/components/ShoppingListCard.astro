@@ -1,0 +1,132 @@
+---
+import { formatAmount, formatParts, type ListGroup } from '../lib/aggregate';
+
+interface Props {
+  title: string;
+  groups: ListGroup[];
+  emptyText?: string;
+  /** Marks the body as a live region the hero demo re-renders. */
+  live?: boolean;
+  class?: string;
+}
+
+const { title, groups, emptyText, live = false, class: className } = Astro.props;
+---
+
+<div class:list={['ui-card', 'list-card', className]}>
+  <p class="ui-card__title">{title}</p>
+  <div
+    class="list-card__body"
+    data-list-body={live ? '' : undefined}
+    data-empty-text={emptyText}
+    aria-live={live ? 'polite' : undefined}
+  >
+    {
+      groups.map((group) => (
+        <div class="list-group">
+          <p class="list-group__label">{group.category.label}</p>
+          <ul class="list-group__items">
+            {group.items.map((item) => (
+              <li class:list={['list-item', item.parts.length > 1 && 'list-item--merged']}>
+                <span class="list-item__name">{item.name}</span>
+                <span class="list-item__amount">
+                  <span class="list-item__total">{formatAmount(item.total)}</span>
+                  {item.parts.length > 1 && (
+                    <span class="list-item__parts">{formatParts(item.parts)}</span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+    {groups.length === 0 && emptyText && <p class="list-card__empty">{emptyText}</p>}
+  </div>
+</div>
+
+<style is:global>
+  /* Global (not scoped) because the hero demo re-renders this markup on the client. */
+  .ui-card {
+    padding: 20px;
+    border-radius: var(--radius-card);
+    background: var(--color-white);
+    box-shadow: var(--shadow-card);
+    text-align: left;
+  }
+
+  .ui-card__title {
+    margin-bottom: 12px;
+    color: var(--color-heading);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .list-card__body {
+    display: grid;
+    gap: 10px;
+  }
+
+  .list-group {
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
+
+  .list-group__label {
+    padding: 6px 14px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.6;
+  }
+
+  .list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 52px;
+    padding: 8px 14px;
+    color: var(--color-heading);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .list-item + .list-item {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .list-item--merged {
+    background: var(--color-selected);
+  }
+
+  .list-item__amount {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .list-item__total {
+    font-size: 17px;
+    white-space: nowrap;
+  }
+
+  .list-item__parts {
+    color: var(--color-primary);
+    font-size: 12px;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  .list-card__empty {
+    padding: 16px 4px;
+    color: var(--color-subtle);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+</style>

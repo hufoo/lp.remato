@@ -1,0 +1,257 @@
+---
+import { Picture } from 'astro:assets';
+import heroPhoto from '../assets/photos/hero-kitchen.png';
+import CtaBlock from './CtaBlock.astro';
+import MenuPickCard from './MenuPickCard.astro';
+import ShoppingListCard from './ShoppingListCard.astro';
+import { demoCategories, demoMenus, hero } from '../content/site';
+import { aggregate, initialSelection } from '../lib/aggregate';
+
+const groups = aggregate(demoMenus, demoCategories, initialSelection(demoMenus));
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__bg">
+    <Picture
+      src={heroPhoto}
+      alt=""
+      formats={['avif', 'webp']}
+      fallbackFormat="jpg"
+      widths={[750, 1080, 1440]}
+      sizes="100vw"
+      quality={80}
+      loading="eager"
+      fetchpriority="high"
+      class="hero__photo"
+    />
+  </div>
+
+  <div class="container hero__inner">
+    <h1 id="hero-title" class="hero__title jp-wrap">{hero.title}</h1>
+    <p class="hero__lead">{hero.lead}</p>
+
+    <div
+      class="hero__demo"
+      data-hero-demo
+      data-menus={JSON.stringify(demoMenus)}
+      data-categories={JSON.stringify(demoCategories)}
+    >
+      <p id="hero-demo-hint" class="visually-hidden">{hero.demoHint}</p>
+      <MenuPickCard
+        menus={demoMenus}
+        title={hero.menuCardTitle}
+        interactive
+        describedBy="hero-demo-hint"
+      />
+      <div class="hero__arrow" aria-hidden="true">
+        <span class="hero__arrow-label">{hero.arrowLabel}</span>
+        <svg class="hero__arrow-icon" viewBox="0 0 40 32" width="40" height="32">
+          <path d="M0 10h20V0l20 16-20 16V22H0z" fill="currentColor"></path>
+        </svg>
+      </div>
+      <ShoppingListCard title={hero.listCardTitle} groups={groups} emptyText={hero.emptyList} live />
+    </div>
+
+    <CtaBlock />
+  </div>
+</section>
+
+<script>
+  import { aggregate, formatAmount, formatParts, type Category, type ListGroup, type Menu } from '../lib/aggregate';
+
+  function el<K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string) {
+    const node = document.createElement(tag);
+    node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function renderGroups(groups: ListGroup[], emptyText: string): HTMLElement[] {
+    if (groups.length === 0) return [el('p', 'list-card__empty', emptyText)];
+
+    return groups.map((group) => {
+      const wrapper = el('div', 'list-group');
+      wrapper.append(el('p', 'list-group__label', group.category.label));
+      const list = el('ul', 'list-group__items');
+      for (const item of group.items) {
+        const merged = item.parts.length > 1;
+        const row = el('li', merged ? 'list-item list-item--merged' : 'list-item');
+        const amount = el('span', 'list-item__amount');
+        amount.append(el('span', 'list-item__total', formatAmount(item.total)));
+        if (merged) amount.append(el('span', 'list-item__parts', formatParts(item.parts)));
+        row.append(el('span', 'list-item__name', item.name), amount);
+        list.append(row);
+      }
+      wrapper.append(list);
+      return wrapper;
+    });
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-hero-demo]');
+  const body = root?.querySelector<HTMLElement>('[data-list-body]');
+
+  if (root && body) {
+    const menus: Menu[] = JSON.parse(root.dataset.menus ?? '[]');
+    const categories: Category[] = JSON.parse(root.dataset.categories ?? '[]');
+    const emptyText = body.dataset.emptyText ?? '';
+    const inputs = [...root.querySelectorAll<HTMLInputElement>('[data-menu-input]')];
+
+    const render = () => {
+      const selected = new Set(inputs.filter((input) => input.checked).map((input) => input.value));
+      body.replaceChildren(...renderGroups(aggregate(menus, categories, selected), emptyText));
+    };
+
+    inputs.forEach((input) => input.addEventListener('change', render));
+    // Browsers may restore checkbox state on back navigation; resync once.
+    window.addEventListener('pageshow', render);
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--color-mint);
+  }
+
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .hero__bg :global(picture) {
+    display: block;
+    height: 100%;
+  }
+
+  .hero__bg :global(.hero__photo) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 92% 100%;
+  }
+
+  /* Wash that keeps text and cards dominant over the photo. */
+  .hero__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgb(236 249 246 / 0.9) 0%,
+      rgb(236 249 246 / 0.84) 55%,
+      rgb(236 249 246 / 0.88) 100%
+    );
+  }
+
+  @media (min-width: 1024px) {
+    .hero__bg::after {
+      background:
+        radial-gradient(
+          ellipse 34% 26% at 50% 88%,
+          rgb(236 249 246 / 0.85) 0%,
+          rgb(236 249 246 / 0.6) 60%,
+          rgb(236 249 246 / 0) 100%
+        ),
+        linear-gradient(0deg, rgb(236 249 246 / 0.4) 0%, rgb(236 249 246 / 0) 30%),
+        linear-gradient(
+          90deg,
+          rgb(236 249 246 / 0.82) 0%,
+          rgb(236 249 246 / 0.76) 58%,
+          rgb(236 249 246 / 0.3) 80%,
+          rgb(236 249 246 / 0) 94%
+        );
+    }
+  }
+
+  .hero__inner {
+    padding-block: 48px 56px;
+    text-align: center;
+  }
+
+  .hero__title {
+    font-size: 30px;
+    line-height: 1.4;
+    letter-spacing: 0.04em;
+  }
+
+  .hero__lead {
+    margin-top: 12px;
+    color: var(--color-heading);
+    font-size: 17px;
+    line-height: 1.8;
+    letter-spacing: 0.06em;
+  }
+
+  .hero__demo {
+    display: grid;
+    gap: 12px;
+    max-width: 440px;
+    margin: 32px auto 36px;
+  }
+
+  .hero__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--color-primary-text);
+  }
+
+  .hero__arrow-label {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .hero__arrow-icon {
+    width: 28px;
+    height: auto;
+    transform: rotate(90deg);
+  }
+
+  @media (min-width: 768px) {
+    .hero__inner {
+      padding-block: 64px 64px;
+    }
+
+    .hero__title {
+      font-size: 44px;
+    }
+
+    .hero__lead {
+      font-size: 20px;
+    }
+
+    .hero__demo {
+      grid-template-columns: minmax(0, 1fr) 112px minmax(0, 1fr);
+      align-items: start;
+      gap: 0;
+      max-width: 900px;
+      margin-block: 40px 44px;
+    }
+
+    .hero__arrow {
+      flex-direction: column;
+      gap: 8px;
+      align-self: center;
+    }
+
+    .hero__arrow-icon {
+      width: 40px;
+      transform: none;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero__inner {
+      padding-block: 72px 64px;
+    }
+
+    .hero__title {
+      font-size: 48px;
+    }
+  }
+</style>

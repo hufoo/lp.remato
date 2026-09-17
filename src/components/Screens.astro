@@ -1,0 +1,110 @@
+---
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import login from '../assets/app/login.png';
+import menu from '../assets/app/menu.png';
+import list from '../assets/app/list.png';
+import { screens } from '../content/site';
+
+const images: Record<(typeof screens.items)[number]['image'], ImageMetadata> = { login, menu, list };
+---
+
+<section class="section section--mint screens" aria-labelledby="screens-title">
+  <div class="container">
+    <h2 id="screens-title" class="section-title screens__title">{screens.title}</h2>
+  </div>
+  <div class="screens__scroller" role="region" aria-label={screens.scrollHint} tabindex="0">
+    <ul class="screens__list">
+      {
+        screens.items.map((item) => (
+          <li class="screens__item">
+            <figure>
+              <div class="screens__frame">
+                <Picture
+                  src={images[item.image]}
+                  alt={item.alt}
+                  formats={['webp']}
+                  widths={[294, 588]}
+                  sizes="(min-width: 768px) 260px, 64vw"
+                  quality={92}
+                />
+              </div>
+              <figcaption class="screens__caption">{item.caption}</figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .screens__title {
+    text-align: center;
+  }
+
+  .screens__scroller {
+    margin-top: 32px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+
+  .screens__scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .screens__scroller:focus-visible {
+    outline-offset: -3px;
+  }
+
+  .screens__list {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    padding: 8px var(--gutter) 16px;
+  }
+
+  .screens__item {
+    width: min(64vw, 260px);
+    scroll-snap-align: start;
+  }
+
+  .screens__frame {
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--color-white);
+    box-shadow: var(--shadow-card);
+  }
+
+  .screens__frame :global(img) {
+    width: 100%;
+    height: auto;
+  }
+
+  .screens__caption {
+    margin-top: 16px;
+    color: var(--color-heading);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .screens__scroller {
+      margin-top: 44px;
+      overflow: visible;
+    }
+
+    .screens__list {
+      justify-content: center;
+      gap: 56px;
+      width: auto;
+      padding-block: 0;
+    }
+  }
+</style>

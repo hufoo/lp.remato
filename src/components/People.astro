@@ -1,0 +1,91 @@
+---
+import { Picture } from 'astro:assets';
+import photo from '../assets/photos/people-dinner.png';
+import Icon from './Icon.astro';
+import { people } from '../content/site';
+---
+
+<section class="section people" aria-labelledby="people-title">
+  <div class="container people__inner">
+    <Picture
+      src={photo}
+      alt={people.imageAlt}
+      formats={['avif', 'webp']}
+      fallbackFormat="jpg"
+      widths={[560, 840, 1120]}
+      sizes="(min-width: 1184px) 560px, (min-width: 1024px) calc(50vw - 72px), calc(100vw - 40px)"
+      quality={80}
+      class="people__photo"
+    />
+    <div class="people__text">
+      <h2 id="people-title" class="section-title accent-heading">{people.title}</h2>
+      <ul class="people__list">
+        {
+          people.items.map((item) => (
+            <li class="people__item">
+              <span class="people__check">
+                <Icon name="check" size={16} />
+              </span>
+              <span class="jp-wrap">{item}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .people__inner {
+    display: grid;
+    gap: 40px;
+  }
+
+  .people__inner :global(.people__photo) {
+    width: 100%;
+    aspect-ratio: 1216 / 752;
+    object-fit: cover;
+    border-radius: var(--radius-card);
+  }
+
+  .people__list {
+    display: grid;
+    gap: 14px;
+    margin-top: 24px;
+  }
+
+  .people__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    color: var(--color-heading);
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  .people__check {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    margin-top: 1px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  @media (min-width: 768px) {
+    .people__item {
+      font-size: 18px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .people__inner {
+      grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+      align-items: center;
+      gap: 72px;
+    }
+  }
+</style>

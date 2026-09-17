@@ -1,0 +1,224 @@
+---
+import MenuPickCard from './MenuPickCard.astro';
+import ShoppingListCard from './ShoppingListCard.astro';
+import { demoCategories, demoMenus, hero, steps } from '../content/site';
+import { aggregate, formatAmount, initialSelection } from '../lib/aggregate';
+
+const groups = aggregate(demoMenus, demoCategories, initialSelection(demoMenus));
+const registerMenu = demoMenus[0];
+const [registerStep, selectStep, listStep] = steps.items;
+---
+
+<section class="section steps" aria-labelledby="steps-title">
+  <div class="container">
+    <h2 id="steps-title" class="section-title accent-heading">
+      {steps.titleBefore}<span class="steps__number">{steps.titleNumber}</span>{steps.titleAfter}
+    </h2>
+
+    <ol class="steps__list">
+      <li class="step">
+        <h3 class="step__head"><span class="step__badge" aria-hidden="true">1</span>{registerStep.title}</h3>
+        <div class="step__visual" aria-hidden="true">
+          <div class="ui-card register-card">
+            <p class="ui-card__title">{steps.registerCard.title}</p>
+            <div class="register-card__row">
+              <span class="register-card__label">{steps.registerCard.nameLabel}</span>
+              <span class="register-card__field">{steps.registerCard.nameValue}</span>
+            </div>
+            <div class="register-card__row register-card__row--top">
+              <span class="register-card__label">{steps.registerCard.ingredientsLabel}</span>
+              <span class="register-card__grid">
+                {
+                  registerMenu.ingredients.map((ing) => (
+                    <>
+                      <span class="register-card__field">{ing.name}</span>
+                      <span class="register-card__field">{formatAmount(ing.amount)}</span>
+                    </>
+                  ))
+                }
+              </span>
+            </div>
+            <span class="register-card__button">{steps.registerCard.button}</span>
+          </div>
+        </div>
+        <p class="step__caption">{registerStep.caption}</p>
+      </li>
+
+      <li class="step">
+        <h3 class="step__head"><span class="step__badge" aria-hidden="true">2</span>{selectStep.title}</h3>
+        <div class="step__visual" aria-hidden="true">
+          <MenuPickCard menus={demoMenus} prompt={steps.selectCard.prompt} />
+        </div>
+        <p class="step__caption">{selectStep.caption}</p>
+      </li>
+
+      <li class="step">
+        <h3 class="step__head"><span class="step__badge" aria-hidden="true">3</span>{listStep.title}</h3>
+        <div class="step__visual" aria-hidden="true">
+          <ShoppingListCard title={hero.listCardTitle} groups={groups} />
+        </div>
+        <p class="step__caption">{listStep.caption}</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<style>
+  .steps__number {
+    display: inline-block;
+    margin-inline: 0.06em;
+    color: var(--color-primary);
+    font-size: 1.45em;
+    line-height: 1;
+    vertical-align: -0.08em;
+  }
+
+  .steps__list {
+    display: grid;
+    gap: 48px;
+    margin-top: 36px;
+  }
+
+  .step {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+  }
+
+  .step__head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 20px;
+  }
+
+  .step__badge {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: 19px;
+    line-height: 1;
+  }
+
+  .step__visual {
+    max-width: 400px;
+  }
+
+  .step__caption {
+    font-size: 16px;
+  }
+
+  .register-card__row {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .register-card__row--top {
+    align-items: start;
+  }
+
+  .register-card__row--top .register-card__label {
+    padding-top: 8px;
+  }
+
+  .register-card__label {
+    color: var(--color-subtle);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .register-card__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 72px;
+    gap: 8px;
+  }
+
+  .register-card__field {
+    display: block;
+    padding: 7px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    color: var(--color-heading);
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  .register-card__button {
+    display: block;
+    margin-top: 16px;
+    padding: 10px;
+    border-radius: 6px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  @media (min-width: 640px) and (max-width: 1023.98px) {
+    .step {
+      grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+      grid-template-areas:
+        'head head'
+        'visual caption';
+      align-items: center;
+      column-gap: 32px;
+    }
+
+    .step__head {
+      grid-area: head;
+    }
+
+    .step__visual {
+      grid-area: visual;
+    }
+
+    .step__caption {
+      grid-area: caption;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .steps__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: auto 1fr auto;
+      column-gap: 72px;
+      row-gap: 0;
+      margin-top: 44px;
+    }
+
+    .step {
+      position: relative;
+      grid-row: span 3;
+      grid-template-rows: subgrid;
+      gap: 16px;
+    }
+
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -52px;
+      width: 32px;
+      height: 32px;
+      background: var(--color-accent);
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h16m-6-6 6 6-6 6'/%3E%3C/svg%3E")
+        center / contain no-repeat;
+    }
+
+    .step__visual {
+      max-width: none;
+    }
+  }
+</style>

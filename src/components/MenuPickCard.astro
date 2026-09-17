@@ -1,0 +1,165 @@
+---
+import Icon from './Icon.astro';
+import { formatAmount, type Menu } from '../lib/aggregate';
+
+interface Props {
+  menus: Menu[];
+  title?: string;
+  prompt?: string;
+  /** Real checkboxes (hero demo) vs. a static illustration. */
+  interactive?: boolean;
+  describedBy?: string;
+  class?: string;
+}
+
+const { menus, title, prompt, interactive = false, describedBy, class: className } = Astro.props;
+const Wrapper = interactive ? 'fieldset' : 'div';
+---
+
+<Wrapper class:list={['ui-card', 'menu-card', className]} aria-describedby={describedBy}>
+  {title && (interactive ? <legend class="ui-card__title menu-card__legend">{title}</legend> : <p class="ui-card__title">{title}</p>)}
+  {prompt && <p class="menu-card__prompt">{prompt}</p>}
+  <ul class="menu-card__list">
+    {
+      menus.map((menu) => {
+        const Row = interactive ? 'label' : 'div';
+        return (
+          <li>
+            <Row class="menu-option">
+              {interactive && (
+                <input
+                  class="menu-option__input visually-hidden"
+                  type="checkbox"
+                  name="menu"
+                  value={menu.id}
+                  checked={menu.checked}
+                  data-menu-input
+                />
+              )}
+              <span class:list={['menu-option__box', !interactive && menu.checked && 'is-checked']}>
+                <Icon name="check" size={16} class="menu-option__check" />
+              </span>
+              <span class="menu-option__text">
+                <span class="menu-option__name">{menu.name}</span>
+                <span class="menu-option__ingredients">
+                  {menu.ingredients.map((ing) => (
+                    <span>
+                      {ing.name} {formatAmount(ing.amount)}
+                    </span>
+                  ))}
+                </span>
+              </span>
+            </Row>
+          </li>
+        );
+      })
+    }
+  </ul>
+</Wrapper>
+
+<style>
+  .menu-card {
+    margin: 0;
+    border: 0;
+    min-inline-size: 0;
+  }
+
+  .menu-card__legend {
+    float: left;
+    width: 100%;
+    padding: 0;
+  }
+
+  .menu-card__legend + * {
+    clear: both;
+  }
+
+  .menu-card__prompt {
+    margin-bottom: 10px;
+    color: var(--color-subtle);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .menu-card__list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .menu-option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 60px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    background: var(--color-idle);
+    transition: background-color 0.2s ease;
+  }
+
+  label.menu-option {
+    cursor: pointer;
+  }
+
+  .menu-option:has(.menu-option__input:checked),
+  .menu-option:has(.is-checked) {
+    background: var(--color-selected);
+  }
+
+  .menu-option__box {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border: 2px solid #b9c2c8;
+    border-radius: 5px;
+    background: var(--color-white);
+    color: transparent;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .menu-option__input:checked + .menu-option__box,
+  .menu-option__box.is-checked {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  .menu-option__input:focus-visible + .menu-option__box {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  label.menu-option:hover .menu-option__box {
+    border-color: var(--color-primary);
+  }
+
+  .menu-option__text {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .menu-option__name {
+    color: var(--color-heading);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .menu-option__ingredients {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 12px;
+    color: var(--color-subtle);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .menu-option__ingredients > span {
+    white-space: nowrap;
+  }
+</style>

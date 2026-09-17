@@ -1,0 +1,109 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <SiteHeader />
+  <main class="legal">
+    <article class="container legal__doc">
+      <slot />
+    </article>
+  </main>
+  <SiteFooter />
+</BaseLayout>
+
+<style>
+  .legal {
+    padding-block: 48px 72px;
+  }
+
+  /* Plain document layout: measure capped for comfortable Japanese line length. */
+  .legal__doc {
+    max-width: calc(36em + var(--gutter) * 2);
+  }
+
+  .legal__doc :global(h1) {
+    font-size: 26px;
+    line-height: 1.5;
+  }
+
+  .legal__doc :global(h2) {
+    margin-top: 40px;
+    font-size: 19px;
+    line-height: 1.6;
+  }
+
+  .legal__doc :global(p) {
+    margin-top: 16px;
+    font-size: 16px;
+    line-height: 1.9;
+    /* Keeps the author's line breaks inside a paragraph (e.g. the closing dates). */
+    white-space: pre-line;
+  }
+
+  .legal__doc :global(ol),
+  .legal__doc :global(ul) {
+    margin-top: 16px;
+    padding-left: 1.7em;
+    font-size: 16px;
+    line-height: 1.9;
+  }
+
+  .legal__doc :global(ol) {
+    list-style: decimal;
+  }
+
+  .legal__doc :global(ul) {
+    list-style: disc;
+  }
+
+  .legal__doc :global(li + li) {
+    margin-top: 8px;
+  }
+
+  .legal__doc :global(li)::marker {
+    color: var(--color-subtle);
+  }
+
+  .legal__doc :global(a) {
+    color: var(--color-primary-text);
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
+  }
+
+  .legal__doc :global(hr) {
+    margin-top: 48px;
+    border: 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  @media (min-width: 768px) {
+    .legal {
+      padding-block: 64px 96px;
+    }
+
+    .legal__doc :global(h1) {
+      font-size: 32px;
+    }
+
+    .legal__doc :global(h2) {
+      margin-top: 48px;
+      font-size: 20px;
+    }
+
+    .legal__doc :global(p),
+    .legal__doc :global(ol),
+    .legal__doc :global(ul) {
+      font-size: 17px;
+    }
+  }
+</style>

@@ -1,0 +1,75 @@
+---
+import { faq } from '../content/site';
+---
+
+<section class="section--mint faq" aria-labelledby="faq-title">
+  <div class="container faq__inner">
+    <h2 id="faq-title" class="section-title faq__title">{faq.title}</h2>
+    <dl class="faq__list">
+      {
+        faq.items.map((item) => (
+          <div class="faq__row">
+            <dt class="faq__q">{item.q}</dt>
+            <dd class="faq__a">{item.a}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .faq__inner {
+    display: grid;
+    gap: 20px;
+    padding-block: 56px;
+  }
+
+  .faq__row {
+    display: grid;
+    gap: 4px;
+    padding-block: 16px;
+  }
+
+  .faq__row + .faq__row {
+    border-top: 1px solid #cfe6df;
+  }
+
+  .faq__q {
+    color: var(--color-heading);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.8;
+  }
+
+  .faq__a {
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  @media (min-width: 900px) {
+    .faq__inner {
+      grid-template-columns: 300px minmax(0, 1fr);
+      align-items: center;
+      gap: 0;
+      padding-block: 64px;
+    }
+
+    .faq__title {
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      border-right: 1px solid #cfe6df;
+    }
+
+    .faq__list {
+      padding-left: 72px;
+    }
+
+    .faq__row {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 24px;
+      padding-block: 14px;
+    }
+  }
+</style>

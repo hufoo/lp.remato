@@ -1,0 +1,65 @@
+---
+import Logo from './Logo.astro';
+import { header, links } from '../content/site';
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="site-header__logo" href="/" aria-label={header.logoAlt}>
+      <Logo />
+    </a>
+    <a class="site-header__login" href={links.login}>{header.login}</a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--color-white);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 68px;
+  }
+
+  .site-header__logo {
+    display: block;
+    border-radius: 4px;
+  }
+
+  .site-header__logo :global(img) {
+    width: 124px;
+    height: auto;
+  }
+
+  @media (min-width: 768px) {
+    .site-header__inner {
+      min-height: 76px;
+    }
+
+    .site-header__logo :global(img) {
+      width: 145px;
+    }
+  }
+
+  .site-header__login {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 12px;
+    margin-right: -12px;
+    border-radius: var(--radius-control);
+    color: var(--color-primary);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+  }
+
+  .site-header__login:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>

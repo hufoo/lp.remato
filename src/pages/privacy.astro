@@ -1,0 +1,9 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+import { Content } from '../content/legal/privacy.md';
+import { legal } from '../content/site';
+---
+
+<LegalLayout title={legal.privacy.title} description={legal.privacy.description}>
+  <Content />
+</LegalLayout>

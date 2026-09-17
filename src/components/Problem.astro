@@ -1,0 +1,63 @@
+---
+import { Picture } from 'astro:assets';
+import photo from '../assets/photos/problem-ingredients.png';
+import Lines from './Lines.astro';
+import { problem } from '../content/site';
+---
+
+<section class="section problem" aria-labelledby="problem-title">
+  <div class="container problem__inner">
+    <div class="problem__text">
+      <h2 id="problem-title" class="section-title accent-heading">
+        <Lines lines={problem.titleLines} always />
+      </h2>
+      <p class="problem__body jp-wrap">
+        <Lines lines={problem.bodyLines} />
+      </p>
+    </div>
+    <Picture
+      src={photo}
+      alt={problem.imageAlt}
+      formats={['avif', 'webp']}
+      fallbackFormat="jpg"
+      widths={[560, 840, 1120]}
+      sizes="(min-width: 1184px) 560px, (min-width: 1024px) calc(50vw - 72px), calc(100vw - 40px)"
+      quality={80}
+      class="problem__photo"
+    />
+  </div>
+</section>
+
+<style>
+  .problem__inner {
+    display: grid;
+    gap: 36px;
+  }
+
+  .problem__body {
+    max-width: 36em;
+    margin-top: 20px;
+    font-size: 16px;
+  }
+
+  .problem__inner :global(.problem__photo) {
+    width: 100%;
+    aspect-ratio: 1216 / 752;
+    object-fit: cover;
+    border-radius: var(--radius-card);
+  }
+
+  @media (min-width: 768px) {
+    .problem__body {
+      font-size: 17px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .problem__inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
+      align-items: center;
+      gap: 64px;
+    }
+  }
+</style>
