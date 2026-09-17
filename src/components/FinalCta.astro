@@ -1,12 +1,12 @@
 ---
 import CtaBlock from './CtaBlock.astro';
-import { finalCta } from '../content/site';
+import { finalCta, links } from '../content/site';
 ---
 
 <section class="section final-cta" aria-labelledby="final-cta-title">
   <div class="container">
     <h2 id="final-cta-title" class="section-title final-cta__title jp-wrap">{finalCta.title}</h2>
-    <CtaBlock />
+    <CtaBlock href={links.signupFooter} />
   </div>
 </section>
 

@@ -5,9 +5,19 @@
  */
 import type { Category, Menu } from '../lib/aggregate';
 
+const appUrl = 'https://remato.ivelico.com/';
+
+/**
+ * `ref` marks the landing page, `placement` which of the three links was used.
+ * Deliberately not `utm_*`: on a shared GA4 property those would start a new
+ * session and overwrite the original acquisition source (e.g. an X ad).
+ */
+const appLink = (placement: string) => `${appUrl}?ref=lp&placement=${placement}`;
+
 export const links = {
-  login: 'https://remato.ivelico.com/',
-  signup: 'https://remato.ivelico.com/',
+  login: appLink('header-login'),
+  signupHero: appLink('hero'),
+  signupFooter: appLink('footer'),
 };
 
 /** Google Tag Manager container. Injected on every page by BaseLayout. */

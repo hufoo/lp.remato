@@ -1,9 +1,15 @@
 ---
-import { cta, links } from '../content/site';
+import { cta } from '../content/site';
+
+interface Props {
+  href: string;
+}
+
+const { href } = Astro.props;
 ---
 
 <div class="cta">
-  <a class="cta__button" href={links.signup}>
+  <a class="cta__button" href={href}>
     {cta.label}
   </a>
   <p class="cta__note">{cta.note}</p>

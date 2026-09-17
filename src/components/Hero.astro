@@ -4,7 +4,7 @@ import heroPhoto from '../assets/photos/hero-kitchen.png';
 import CtaBlock from './CtaBlock.astro';
 import MenuPickCard from './MenuPickCard.astro';
 import ShoppingListCard from './ShoppingListCard.astro';
-import { demoCategories, demoMenus, hero } from '../content/site';
+import { demoCategories, demoMenus, hero, links } from '../content/site';
 import { aggregate, initialSelection } from '../lib/aggregate';
 
 const groups = aggregate(demoMenus, demoCategories, initialSelection(demoMenus));
@@ -52,7 +52,7 @@ const groups = aggregate(demoMenus, demoCategories, initialSelection(demoMenus))
       <ShoppingListCard title={hero.listCardTitle} groups={groups} emptyText={hero.emptyList} live />
     </div>
 
-    <CtaBlock />
+    <CtaBlock href={links.signupHero} />
   </div>
 </section>
 
